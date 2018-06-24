@@ -15,7 +15,7 @@ public class Users {
     private static final String INSERT_NEW = "INSERT INTO users (user_id,first_name,last_name,sex,city_id,birth_date,deactivated,relation) VALUES (?,?,?,?,?,?,?,?)";
     private static final String INSERT_NEW_GROUP = "INSERT INTO users_group (user_id,group_id) VALUES (?,?)";
     private static final String SEARCH_USER = "SELECT * FROM users WHERE user_id = ?";
-    private static final String SEARCH_MATCH_USER = "SELECT user_id, COUNT(*) as cnt  FROM users_group  GROUP BY user_id  HAVING COUNT(user_id) > 3";
+    private static final String SEARCH_MATCH_USER = "SELECT user_id, COUNT(*) as cnt  FROM users_group  GROUP BY user_id  HAVING COUNT(user_id) > 1";
     //private static final String SEARCH_MATCH_USER = "SELECT user_id, COUNT(*) as cnt  FROM users_group  GROUP BY user_id  HAVING COUNT(user_id) > 15 ORDER BY cnt DESC LIMIT 0,1000 ";
 
 

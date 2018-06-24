@@ -1,7 +1,9 @@
 package common;
 import java.sql.*;
+import java.util.regex.Pattern;
 
 public class DatabaseConnection {
+
     public static final String URL_HOST = "jdbc:mysql://localhost:3306/vk_api?autoReconnect=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
     public static final String USER = "root";
     public static final String PASSWORD = "9891013212Dd+";

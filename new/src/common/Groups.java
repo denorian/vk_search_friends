@@ -3,22 +3,40 @@ package common;
 import org.json.*;
 import java.sql.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class Groups {
+    static Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
     private static final String INSERT_NEW = "INSERT INTO groups (group_id, name,complete) VALUES (?, ?, ?)";
-    private static final String SEARCH_GROUP =  "SELECT * FROM groups WHERE group_id = ?";
-    private static final String UPDATE_GROUP =  "UPDATE groups SET offset = ? WHERE group_id = ?;";
+    private static final String SEARCH_GROUP = "SELECT * FROM groups WHERE group_id = ?";
+    private static final String SELECT_GROUPS = "SELECT * FROM groups";
+    private static final String UPDATE_GROUP = "UPDATE groups SET offset = ? WHERE group_id = ?;";
     ArrayList<Integer> arrayList = new ArrayList<Integer>();
 
+    public Groups() throws JSONException {
+        try {
+            PreparedStatement  pstmt = DatabaseConnection.connection.prepareStatement(SELECT_GROUPS);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()){
+                this.arrayList.add(rs.getInt("group_id"));
+            }
+        } catch (SQLException e) {}
+    }
+
     public Groups(JSONObject jsonObject) throws JSONException {
-
-        JSONArray  jsonArray = jsonObject.getJSONArray("response");
+        JSONArray  jsonArray = jsonObject.getJSONObject("response").getJSONArray("items");
         for (int i = 1; i < jsonArray.length(); i++) {
+            try{
+                JSONObject group = jsonArray.getJSONObject(i);
+                this.arrayList.add(group.getInt("id"));
+                addGroupToDB(group.getInt("id"),group.getString("name"));
+            } catch (Exception e) {}
 
-            JSONObject group = jsonArray.getJSONObject(i);
-            this.arrayList.add(group.getInt("gid"));
-            addGroupToDB(group.getInt("gid"),group.getString("name"));
         }
+    }
+
+    private static String escapeSpecialRegexChars(String str) {
+        return SPECIAL_REGEX_CHARS.matcher(str).replaceAll("");
     }
 
     private static void addGroupToDB(int group_id, String name){
@@ -35,7 +53,7 @@ public class Groups {
                 preparedStatement.execute();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
        // databaseConnection.closeConnection();
     }
